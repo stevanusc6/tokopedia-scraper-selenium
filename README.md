@@ -6,3 +6,8 @@
 * Chrome Driver (https://chromedriver.chromium.org/downloads) 
 current version I used : 92.0.4515.107
   
+## Project Build
+```mvn clean install```
+
+## JAR Build
+```mvn clean compile assembly:single```
