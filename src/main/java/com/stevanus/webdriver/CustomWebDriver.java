@@ -9,13 +9,14 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomWebDriver {
-
+    private static final String GOOGLE_URL = "https://www.google.com";
     private static final String USER_AGENT =
             "user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-                    + "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36";
+                    + "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36";
 
     private WebDriver driver;
     private WebDriverWait wait;
@@ -28,15 +29,24 @@ public class CustomWebDriver {
         optionsChrome.addArguments(USER_AGENT); // it for enable headless
 
         driver =  new ChromeDriver();
-        wait = new WebDriverWait(driver, 20);
+        wait = new WebDriverWait(driver, 5);
         jsExecutor = (JavascriptExecutor) driver;
     }
 
+    public void switchTab(String tab) {
+        driver.switchTo().window(tab);
+    }
+    public List<String> prepareTwoTabs() {
+        driver.get(GOOGLE_URL);
+        jsExecutor.executeScript("window.open()");
+        return new ArrayList<>(driver.getWindowHandles());
+    }
     /**
      * Function for set url
      * @param Url
      */
-    public void setUrl(String Url){
+    public void setUrl(String Url, String tab){
+        switchTab(tab);
         driver.get(Url);
     }
 
@@ -46,7 +56,7 @@ public class CustomWebDriver {
      * @return List of WebElement
      */
     public List<WebElement> getElementListByXpath(String findElement){
-        jsExecutor.executeScript("window.scrollBy(0,800)");
+        jsExecutor.executeScript("window.scrollBy(0,600)");
         return driver.findElements(By.xpath(findElement));
     }
 

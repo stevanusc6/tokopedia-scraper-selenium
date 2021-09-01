@@ -9,7 +9,6 @@ public class MainProgram {
     public static void main(String[] args) throws IOException {
         Scraping scraping = new Scraping();
         scraping.getLinkProductList();
-        scraping.getProductAttribute();
 
         CSVWrite csvWrite = new CSVWrite();
         csvWrite.writeToCSV(scraping.getProductList(), "result.csv");

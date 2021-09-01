@@ -5,6 +5,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 public class CustomWebDriverTest {
     private CustomWebDriver customWebDriver;
 
@@ -16,7 +18,9 @@ public class CustomWebDriverTest {
     @Test
     public void testGetTextFromElement(){
         String url = "https://www.tokopedia.com/foomee/foomee-cc25-chargers-1usb5v2-1a-ns11-1m-bagged-data-cable-micro";
-        customWebDriver.setUrl(url);
+        List<String> tabs = customWebDriver.prepareTwoTabs();
+
+        customWebDriver.setUrl(url, tabs.get(0));
         customWebDriver.waitUntilElementVisible("//h1[@data-testid='lblPDPDetailProductName']");
         String name = customWebDriver.getTextByElement("//h1[@data-testid='lblPDPDetailProductName']");
 

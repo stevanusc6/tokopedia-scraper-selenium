@@ -22,7 +22,7 @@ public class Scraping {
     private static final String XPATH_MERCHANT_NAME = "//*[@data-testid='llbPDPFooterShopName']//h2";
 
     private List<String> linkProductList;
-    private List<Product> productList;
+    private List<Product> products;
     private int count = 100;
 
     private CustomWebDriver webDriver;
@@ -31,74 +31,69 @@ public class Scraping {
      * Function for populate link of product in category handphone and tablet pages.
      * It will stored in List of String.
      * Those link will used for getting product detail.
-     * @throws IOException
+     *
      */
-    public void getLinkProductList() throws IOException {
+    public void getLinkProductList() {
         webDriver = new CustomWebDriver();
-        webDriver.setUrl(TOKOPEDIA_URL);
+        List<String> tabs = webDriver.prepareTwoTabs();
+        webDriver.setUrl(TOKOPEDIA_URL, tabs.get(0));
         linkProductList = new ArrayList<>();
+        Product product;
+        products = new ArrayList<>();
         try{
-            while(linkProductList.size()!=count) {
+            while(products.size()!=count) {
                 List<WebElement> productList = webDriver.getElementListByXpath(XPATH_PRODUCT_LIST);
 
                 for (WebElement webElement : productList) {
                     try {
                         String path = webElement.findElement(By.tagName("a")).getAttribute("href");
-                        if(!linkProductList.contains(path)) linkProductList.add(path); // for avoid duplication
+                        if(!linkProductList.contains(path))
+                            webDriver.setUrl(path,tabs.get(1));
+                            System.out.println(path);
+                            webDriver.scroll();
+                            webDriver.waitUntilElementVisible(XPATH_PRODUCT_NAME);
+                            String name = webDriver.getTextByElement(XPATH_PRODUCT_NAME);
+                            String description = webDriver.getTextByElement(XPATH_PRODUCT_DESCRIPTION);
+                            String imageLink = webDriver.getTextByElementAttribute(XPATH_PRODUCT_IMG_LINK,"src");
+                            String price = webDriver.getTextByElement(XPATH_PRODUCT_PRICE).replace("Rp","").replace(".","");
+                            webDriver.waitUntilElementVisible(XPATH_PRODUCT_RATING);
+                            String rating = webDriver.getTextByElement(XPATH_PRODUCT_RATING);
+                            String merchant = webDriver.getTextByElement(XPATH_MERCHANT_NAME);
+
+                            product = new Product(name, description, imageLink, price, rating, merchant);
+
+                            products.add(product);
+                            linkProductList.add(path); // for avoid duplication
                     }catch (Exception e){
+                        webDriver.switchTab(tabs.get(0));
                         continue;
                     }
-                    if(linkProductList.size()%10==0){
-                        System.out.println(linkProductList.size());
+                    if(products.size()%10==0){
+                        System.out.println(products.size());
                     }
 
 
-                    if(linkProductList.size()==count){
+                    if(products.size()==count){
                         break;
                     }
+                    webDriver.switchTab(tabs.get(0));
                 }
             }
-            System.out.println(linkProductList.size());
+            System.out.println(products.size());
         }catch (Exception e){
             e.printStackTrace();
+            webDriver.switchTab(tabs.get(0));
         }finally {
             webDriver.close();
         }
     }
 
-    /**
-     * Function for getting product detail and store it into list of product object.
-     */
-    public void getProductAttribute(){
-        webDriver = new CustomWebDriver();
-        productList = new ArrayList<>();
-        Product product;
-        for(String linkProduct:linkProductList){
-            webDriver.setUrl(linkProduct);
-            System.out.println(linkProduct);
-            webDriver.scroll();
-            webDriver.waitUntilElementVisible(XPATH_PRODUCT_NAME);
-            String name = webDriver.getTextByElement(XPATH_PRODUCT_NAME);
-            String description = webDriver.getTextByElement(XPATH_PRODUCT_DESCRIPTION);
-            String imageLink = webDriver.getTextByElementAttribute(XPATH_PRODUCT_IMG_LINK,"src");
-            String price = webDriver.getTextByElement(XPATH_PRODUCT_PRICE).replace("Rp","").replace(".","");
-            webDriver.waitUntilElementVisible(XPATH_PRODUCT_RATING);
-            String rating = webDriver.getTextByElement(XPATH_PRODUCT_RATING);
-            String merchant = webDriver.getTextByElement(XPATH_MERCHANT_NAME);
-
-            product = new Product(name, description, imageLink, price, rating, merchant);
-
-            productList.add(product);
-
-        }
-        webDriver.close();
-    }
 
     /**
      * Function for returning list of product object
      * @return list of product object
      */
     public List<Product> getProductList(){
-        return productList;
+        return products;
     }
 }
