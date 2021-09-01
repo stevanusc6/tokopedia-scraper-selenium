@@ -23,7 +23,7 @@ public class CustomWebDriver {
     private JavascriptExecutor jsExecutor;
 
     public CustomWebDriver() {
-        System.setProperty("webdriver.chrome.driver","chromedriver");
+        System.setProperty("webdriver.chrome.driver","chromedriver.exe");
         ChromeOptions optionsChrome = new ChromeOptions();
         optionsChrome.setHeadless(true);
         optionsChrome.addArguments(USER_AGENT); // it for enable headless
