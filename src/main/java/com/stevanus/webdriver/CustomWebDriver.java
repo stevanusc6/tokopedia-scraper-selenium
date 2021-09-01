@@ -21,9 +21,15 @@ public class CustomWebDriver {
     private WebDriver driver;
     private WebDriverWait wait;
     private JavascriptExecutor jsExecutor;
+    private static String OS = System.getProperty("os.name").toLowerCase();
 
     public CustomWebDriver() {
-        System.setProperty("webdriver.chrome.driver","chromedriver.exe");
+        if(OS.indexOf("win")>=0){
+            System.setProperty("webdriver.chrome.driver","chromedriver.exe");
+        }else if(OS.indexOf("mac")>=0){
+            System.setProperty("webdriver.chrome.driver","chromedriver");
+        }
+
         ChromeOptions optionsChrome = new ChromeOptions();
         optionsChrome.setHeadless(true);
         optionsChrome.addArguments(USER_AGENT); // it for enable headless
