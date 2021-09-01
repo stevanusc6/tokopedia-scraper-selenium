@@ -18,3 +18,5 @@ If any error during install re-download chrome driver and put in the same direct
 1. Copy chromedriver to target folder
 2. run java -jar tokopedia-1.0-SNAPSHOT-jar-with-dependencies.jar
 3. result file will be named result.txt
+
+Successfuly build using MacOS Big Sur
