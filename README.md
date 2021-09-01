@@ -5,11 +5,13 @@
 * Maven
 * Chrome Driver (https://chromedriver.chromium.org/downloads) 
 current version I used : 92.0.4515.107
+
+## First Things
+Download chrome driver suiteable your os.
+and put in the same directory as project.
   
 ## Project Build
 ```mvn clean install```
-
-If any error during install re-download chrome driver and put in the same directory as project.
 
 ## JAR Build
 ```mvn clean compile assembly:single```
